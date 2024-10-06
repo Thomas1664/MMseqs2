@@ -1,4 +1,8 @@
 cmake_minimum_required(VERSION 2.8.12 FATAL_ERROR)
+
+set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED TRUE)
+set(CMAKE_CXX_EXTENSIONS OFF)
 project(MMseqs CXX C)
 message("-- Source Directory: ${CMAKE_CURRENT_SOURCE_DIR}")
 message("-- Project Directory: ${PROJECT_SOURCE_DIR}")
@@ -124,7 +128,7 @@ if (NOT (MMSEQS_ARCH STREQUAL ""))
 endif ()
 
 if (CYGWIN OR ARM OR PPC64)
-    set(MMSEQS_CXX_FLAGS "${MMSEQS_CXX_FLAGS} -D_GNU_SOURCE=1")
+    #set(MMSEQS_CXX_FLAGS "${MMSEQS_CXX_FLAGS} ")
 endif ()
 
 if (CMAKE_COMPILER_IS_ICC)
@@ -163,10 +167,8 @@ if (PPC64 OR SPARC OR ZARCH)
 endif ()
 
 set(MMSEQS_C_FLAGS "${MMSEQS_CXX_FLAGS}")
-set(MMSEQS_CXX_FLAGS "${MMSEQS_CXX_FLAGS} -std=c++1y")
 # Compiler-specific features
 if (CMAKE_COMPILER_IS_CLANG AND (NOT EMSCRIPTEN))
-    set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LANGUAGE_STANDARD "c++11")
     set(CMAKE_XCODE_ATTRIBUTE_CLANG_CXX_LIBRARY "libc++")
     set(MMSEQS_CXX_FLAGS "${MMSEQS_CXX_FLAGS} -stdlib=libc++")
 endif ()
