@@ -6,6 +6,9 @@
 #include "Timer.h"
 
 #include <iomanip>
+#include <span>
+#include <string_view>
+#include <ranges>
 
 extern const char *binary_name;
 extern const char *tool_name;
@@ -27,16 +30,13 @@ const Command* getCommandByName(const char *s) {
     const char *prefix = "base:";
     const char *check = strncmp(s, prefix, strlen(prefix)) == 0 ? s + strlen(prefix) : s;
 
-    for (size_t i = commands.size() - 1; true; i--) {
+    for (size_t i = commands.size() - 1; i != 0; i--) {
         for (size_t j = 0; j < commands[i]->size(); j++) {
             const Command &p = (*commands[i])[j];
             if (!strcmp(s, p.cmd))
                 return &p;
             if (i == 0 && !strcmp(check, p.cmd))
                 return &p;
-        }
-        if (i == 0) {
-            break;
         }
     }
     return NULL;
@@ -185,7 +185,12 @@ int main(int argc, const char **argv) {
         return EXIT_SUCCESS;
     }
 
-    if (strcmp(argv[1], "-h") == 0 || strcmp(argv[1], "--help") == 0){
+    auto args = std::span{argv, static_cast<size_t>(argc)} | std::views::transform([](const char *v)
+                                                                          { return std::string_view(v); });
+
+    if (std::ranges::find_if(args, [](std::string_view arg)
+                         { return arg == "-h" || arg == "--help"; }) != std::ranges::end(args))
+    {
         printUsage(true);
         return EXIT_SUCCESS;
     }
